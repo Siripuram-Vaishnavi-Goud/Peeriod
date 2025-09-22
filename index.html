@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Period Buddy - Home</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #ffe6f0;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #ff4d88;
+      color: white;
+      padding: 20px;
+    }
+    nav {
+      margin: 30px auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    a {
+      display: inline-block;
+      padding: 15px 25px;
+      background: white;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #ff4d88;
+      font-weight: bold;
+      box-shadow: 0px 4px 6px rgba(0,0,0,0.2);
+      transition: transform 0.2s, background 0.3s;
+    }
+    a:hover {
+      background: #ffb3cc;
+      transform: scale(1.05);
+    }
+    footer {
+      margin-top: 40px;
+      padding: 15px;
+      background: #ff4d88;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌸 Period Buddy</h1>
+    <p>Your smart companion for health & wellness</p>
+  </header>
+
+  <nav>
+    <a href="periodtracker.html">🗓️ Period Tracker</a>
+    <a href="ovulation.html">💖 Ovulation</a>
+    <a href="fertility.html">🌱 Fertility</a>
+    <a href="exercises.html">🏃 Exercises</a>
+    <a href="pain.html">💊 Pain Relief</a>
+    <a href="periodbuddygpt.html">🤖 Period Buddy GPT</a>
+    <a href="geotag.html">📍 Find Pads Nearby</a>
+    <a href="reminder.html">⏰ Reminders </a>
+
+  </nav>
+<div class="container">
+    <h2>🌸 Today’s Reminders</h2>
+    <div id="alerts">Loading reminders...</div>
+  </div>
+
+  <script>
+    function showReminders() {
+      const reminders = JSON.parse(localStorage.getItem('reminders')) || [];
+      const alertsDiv = document.getElementById('alerts');
+      alertsDiv.innerHTML = "";
+
+      const now = new Date();
+      let hasToday = false;
+
+      reminders.forEach(reminder => {
+        const reminderDateTime = new Date(reminder.date + "T" + reminder.time);
+        if (reminderDateTime.toDateString() === now.toDateString()) {
+          hasToday = true;
+
+          // Display on page
+          const p = document.createElement('div');
+          p.className = "alert";
+          p.textContent = `⏰ Today: ${reminder.type} at ${reminder.time}`;
+          alertsDiv.appendChild(p);
+
+          // Alert popup if the time is now
+          const diff = reminderDateTime - now;
+          if (diff >= 0 && diff < 60000) { // within 1 minute
+            alert(`⏰ Reminder: ${reminder.type} at ${reminder.time}`);
+          }
+        }
+      });
+
+      if (!hasToday) {
+        alertsDiv.textContent = "No reminders for today!";
+      }
+    }
+
+    // Check reminders on page load
+    showReminders();
+
+    // Optional: check every minute for new reminders
+    setInterval(showReminders, 60000);
+  </script>
+  <footer>
+    <p>© 2025 Period Buddy. All rights reserved.</p>
+  </footer>
+</body>
+</html>

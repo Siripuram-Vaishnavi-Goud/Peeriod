@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⏰ Reminders - Period Buddy</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: #f3f0ff;
+    }
+    header {
+      background: #673ab7;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+    }
+    nav {
+      background: #ede7f6;
+      padding: 10px;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+    }
+    nav a {
+      text-decoration: none;
+      color: #4527a0;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+    nav a:hover {
+      background: #673ab7;
+      color: white;
+    }
+    .container {
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #673ab7;
+    }
+    label {
+      font-weight: bold;
+    }
+    input, select, button {
+      margin: 8px 0;
+      padding: 8px;
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #673ab7;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #4527a0;
+    }
+    .reminder-list {
+      margin-top: 15px;
+      padding: 10px;
+      background: #ede7f6;
+      border-radius: 6px;
+    }
+    .reminder-item {
+      padding: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>⏰ Period & Health Reminders</header>
+
+  <nav>
+    <a href="index.html">🏠 Home</a>
+    <a href="ovulation.html">💖 Ovulation</a>
+    <a href="fertility.html">🌱 Fertility</a>
+    <a href="exercises.html">🏃 Exercises</a>
+    <a href="pain.html">💊 Pain</a>
+    <a href="reminders.html">⏰ Reminders</a>
+    <a href="periodbuddygpt.html">🤖 Period Buddy</a>
+    <a href="geotag.html">📍 GeoTag</a>
+  </nav>
+
+  <div class="container">
+    <div class="card">
+      <h2>➕ Set a Reminder</h2>
+      <form id="reminderForm">
+        <label for="reminderType">Reminder Type:</label>
+        <select id="reminderType">
+          <option value="Period">📅 Period Reminder</option>
+          <option value="Medication">💊 Medication</option>
+          <option value="Exercise">🏃 Exercise</option>
+          <option value="Water">💧 Drink Water</option>
+        </select>
+
+        <label for="reminderDate">Date:</label>
+        <input type="date" id="reminderDate">
+
+        <label for="reminderTime">Time:</label>
+        <input type="time" id="reminderTime">
+
+        <button type="button" onclick="addReminder()">✅ Add Reminder</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>📋 Your Reminders</h2>
+      <div id="reminderList" class="reminder-list">No reminders set yet.</div>
+    </div>
+  </div>
+
+  <script>
+    // Load reminders from localStorage
+    let reminders = JSON.parse(localStorage.getItem('reminders')) || [];
+
+    const reminderList = document.getElementById('reminderList');
+
+    function displayReminders() {
+      reminderList.innerHTML = "";
+      if (reminders.length === 0) {
+        reminderList.textContent = "No reminders set yet.";
+        return;
+      }
+      reminders.forEach(reminder => {
+        const p = document.createElement('p');
+        p.className = "reminder-item";
+        p.textContent = `${reminder.type} → ${reminder.date} at ${reminder.time}`;
+        reminderList.appendChild(p);
+      });
+    }
+
+    function addReminder() {
+      const type = document.getElementById('reminderType').value;
+      const date = document.getElementById('reminderDate').value;
+      const time = document.getElementById('reminderTime').value;
+
+      if (!date || !time) {
+        alert("⚠️ Please select both date and time.");
+        return;
+      }
+
+      const newReminder = { type, date, time };
+      reminders.push(newReminder);
+
+      // Save to localStorage
+      localStorage.setItem('reminders', JSON.stringify(reminders));
+
+      displayReminders();
+      document.getElementById('reminderForm').reset();
+      alert("✅ Reminder added successfully!");
+    }
+
+    // Display reminders on page load
+    displayReminders();
+  </script>
+</body>
+</html>

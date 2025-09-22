@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Period Buddy GPT</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: #fff8f0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      background: #ff9800;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+    }
+    nav {
+      background: #ffe0b2;
+      padding: 10px;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+    }
+    nav a {
+      text-decoration: none;
+      color: #e65100;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+    nav a:hover {
+      background: #ff9800;
+      color: white;
+    }
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .message {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 8px;
+      max-width: 70%;
+    }
+    .user {
+      background: #ffe0b2;
+      align-self: flex-end;
+    }
+    .bot {
+      background: #fff3e0;
+      align-self: flex-start;
+    }
+    .input-area {
+      display: flex;
+      padding: 10px;
+      background: #ffe0b2;
+    }
+    input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      margin-left: 10px;
+      padding: 10px 15px;
+      background: #ff9800;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #e65100;
+    }
+  </style>
+</head>
+<body>
+  <header>🤖 Period Buddy GPT</header>
+
+  <nav>
+    <a href="index.html">🏠 Home</a>
+    <a href="ovulation.html">💖 Ovulation</a>
+    <a href="fertility.html">🌱 Fertility</a>
+    <a href="exercises.html">🏃 Exercises</a>
+    <a href="pain.html">💊 Pain</a>
+    <a href="reminders.html">⏰ Reminders</a>
+    <a href="geotag.html">📍 GeoTag</a>
+  </nav>
+
+  <div class="chat-container" id="chatContainer">
+    <div class="message bot">👋 Hi! I'm your Period Buddy. Ask me anything about periods, health, or self-care!</div>
+  </div>
+
+  <div class="input-area">
+    <input type="text" id="userInput" placeholder="Type your question...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    function sendMessage() {
+      const input = document.getElementById('userInput');
+      const message = input.value.trim();
+      if (!message) return;
+
+      // Display user message
+      const chatContainer = document.getElementById('chatContainer');
+      const userMsg = document.createElement('div');
+      userMsg.className = "message user";
+      userMsg.textContent = message;
+      chatContainer.appendChild(userMsg);
+
+      // Simulated bot response (for now static, later connect API)
+      const botMsg = document.createElement('div');
+      botMsg.className = "message bot";
+
+      if (message.toLowerCase().includes("cramps")) {
+        botMsg.textContent = "💡 For cramps: try using a heating pad, doing light yoga, or drinking ginger tea.";
+      } else if (message.toLowerCase().includes("diet")) {
+        botMsg.textContent = "🥗 A healthy period diet includes leafy greens, nuts, fruits, and plenty of water!";
+      } else if (message.toLowerCase().includes("exercise")) {
+        botMsg.textContent = "🏃 Light walking, yoga, and stretching are great during your period!";
+      } else {
+        botMsg.textContent = "🤗 I'm here for you! Try asking about cramps, diet, or exercise.";
+      }
+
+      chatContainer.appendChild(botMsg);
+
+      // Auto-scroll to bottom
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      // Clear input
+      input.value = "";
+    }
+  </script>
+</body>
+</html>
