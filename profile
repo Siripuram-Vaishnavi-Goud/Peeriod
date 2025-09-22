@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>👤 Profile</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #fff0f6; padding: 20px; max-width: 500px; margin: auto; }
+        h1 { text-align: center; color: #d6336c; margin-bottom: 20px; }
+        label { display: block; margin: 10px 0 5px; font-weight: bold; }
+        input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; }
+        button { padding: 10px 20px; margin-top: 20px; background-color: #d6336c; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #b02657; }
+        #message { margin-top: 15px; font-weight: bold; text-align: center; }
+        nav ul { list-style: none; display: flex; gap: 10px; justify-content: center; padding: 0; margin-bottom: 20px; }
+        nav a { text-decoration: none; color: #d6336c; font-weight: bold; }
+        nav a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <ul>
+        <li><a href="index.html">🏠 Home</a></li>
+        <li><a href="pcod.html">🩺 PCOD Tracker</a></li>
+        <li><a href="profile.html">👤 Profile</a></li>
+        <li><a href="#" onclick="logout()">Logout</a></li>
+    </ul>
+</nav>
+
+<h1>👤 Profile</h1>
+
+<label>Username:</label>
+<input type="text" id="username" disabled>
+
+<label>Full Name:</label>
+<input type="text" id="fullname">
+
+<label>Email:</label>
+<input type="email" id="email">
+
+<label>Date of Birth:</label>
+<input type="date" id="dob">
+
+<label>Weight (kg):</label>
+<input type="number" id="weight" min="0">
+
+<label>Height (cm):</label>
+<input type="number" id="height" min="0">
+
+<label>Password:</label>
+<input type="password" id="password" placeholder="Enter new password">
+
+<button onclick="updateProfile()">Update Profile</button>
+
+<div id="message"></div>
+
+<script>
+    const currentUser = localStorage.getItem('currentUser');
+
+    if(!currentUser){
+        alert("Please login first!");
+        window.location.href = "login.html";
+    }
+
+    // Load user data
+    let users = JSON.parse(localStorage.getItem('users') || '{}');
+    if(!users[currentUser]){
+        users[currentUser] = {}; // initialize
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    const userData = users[currentUser];
+
+    document.getElementById('username').value = currentUser;
+    document.getElementById('fullname').value = userData.fullname || '';
+    document.getElementById('email').value = userData.email || '';
+    document.getElementById('dob').value = userData.dob || '';
+    document.getElementById('weight').value = userData.weight || '';
+    document.getElementById('height').value = userData.height || '';
+    document.getElementById('password').value = userData.password || '';
+
+    function updateProfile() {
+        const fullname = document.getElementById('fullname').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const dob = document.getElementById('dob').value;
+        const weight = document.getElementById('weight').value;
+        const height = document.getElementById('height').value;
+        const password = document.getElementById('password').value;
+
+        if(!fullname || !email || !dob || !weight || !height || !password){
+            showMessage("Please fill all fields!", "red");
+            return;
+        }
+
+        users[currentUser] = {
+            fullname, email, dob, weight, height, password
+        };
+        localStorage.setItem('users', JSON.stringify(users));
+        showMessage("Profile updated successfully!", "green");
+    }
+
+    function showMessage(msg, color){
+        const message = document.getElementById('message');
+        message.innerText = msg;
+        message.style.color = color;
+    }
+
+    function logout() {
+        localStorage.removeItem('currentUser');
+        window.location.href = "login.html";
+    }
+</script>
+
+</body>
+</html>
