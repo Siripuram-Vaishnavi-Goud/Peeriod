@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>🔑 Login / Create Account</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #fff0f6; color: #333; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .container { background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 350px; }
+        h1 { color: #d6336c; text-align: center; margin-bottom: 20px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px; border: 1px solid #ccc; }
+        button { width: 100%; padding: 10px; background-color: #d6336c; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        button:hover { background-color: #b02657; }
+        #message { text-align: center; margin-top: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔑 Login / Create Account</h1>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <button onclick="createAccount()">Create Account</button>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        function createAccount() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const message = document.getElementById('message');
+
+            if(!username || !password) { 
+                message.innerText = "Please enter both username and password.";
+                message.style.color = "red";
+                return; 
+            }
+
+            let users = JSON.parse(localStorage.getItem('users') || '{}');
+
+            if(users[username]) {
+                message.innerText = "Username already exists!";
+                message.style.color = "red";
+            } else {
+                users[username] = password;
+                localStorage.setItem('users', JSON.stringify(users));
+                message.innerText = "Account created! You can now login.";
+                message.style.color = "green";
+            }
+        }
+
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const message = document.getElementById('message');
+
+            let users = JSON.parse(localStorage.getItem('users') || '{}');
+
+            if(users[username] && users[username] === password) {
+                // Save current user
+                localStorage.setItem('currentUser', username);
+                message.innerText = "Login successful!";
+                message.style.color = "green";
+
+                // Redirect to home page after login
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 1000);
+            } else {
+                message.innerText = "Invalid username or password!";
+                message.style.color = "red";
+            }
+        }
+    </script>
+</body>
+</html>
