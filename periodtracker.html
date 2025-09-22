@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Period Tracker</title>
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      max-width: 600px;
+      margin: 20px auto;
+    }
+    .day {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+      border-radius: 5px;
+      background: #fff;
+    }
+    .period {
+      background: #f8d7e5;
+      color: #d63384;
+      font-weight: bold;
+    }
+    .fertile {
+      background: #d1f7d1;
+      color: #0a8a0a;
+      font-weight: bold;
+    }
+    .ovulation {
+      background: #ffe7a5;
+      color: #b37400;
+      font-weight: bold;
+    }
+    .calendar-header {
+      text-align: center;
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+    }
+    .nav-btn {
+      background: #d63384;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .nav-btn:hover {
+      background: #b12a6e;
+    }
+  </style>
+  <script>
+    let cycleStart = null;
+    let cycleLength = 28;
+    let periodLength = 5;
+    let displayMonth, displayYear;
+
+    function initTracker(event) {
+      if (event) event.preventDefault();
+
+      cycleStart = new Date(document.getElementById("start").value);
+      cycleLength = parseInt(document.getElementById("cycle").value || 28);
+      periodLength = parseInt(document.getElementById("periodLength").value || 5);
+
+      if (isNaN(cycleStart.getTime())) {
+        alert("Please select a start date.");
+        return;
+      }
+
+      // Start with month of cycleStart
+      displayMonth = cycleStart.getMonth();
+      displayYear = cycleStart.getFullYear();
+      renderCalendar(displayYear, displayMonth);
+    }
+
+    function renderCalendar(year, month) {
+      const calendarDiv = document.getElementById("calendar");
+      calendarDiv.innerHTML = "";
+
+      // Update header
+      document.getElementById("monthLabel").innerText =
+        new Date(year, month).toLocaleString("default", { month: "long" }) + " " + year;
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      // Empty slots for first week
+      for (let i = 0; i < firstDay; i++) {
+        const emptyCell = document.createElement("div");
+        emptyCell.classList.add("day");
+        calendarDiv.appendChild(emptyCell);
+      }
+
+      // Generate cycle predictions
+      const periodDays = [];
+      const ovulationDays = [];
+      const fertileDays = [];
+
+      let current = new Date(cycleStart);
+      while (current.getFullYear() <= year + 1) { // predict up to 1 year ahead
+        const nextPeriod = new Date(current);
+        nextPeriod.setDate(current.getDate() + cycleLength);
+
+        const ovulation = new Date(current);
+        ovulation.setDate(current.getDate() + (cycleLength - 14));
+
+        const fertileStart = new Date(ovulation);
+        fertileStart.setDate(ovulation.getDate() - 2);
+
+        const fertileEnd = new Date(ovulation);
+        fertileEnd.setDate(ovulation.getDate() + 2);
+
+        // Collect days
+        for (let i = 0; i < periodLength; i++) {
+          const d = new Date(current);
+          d.setDate(current.getDate() + i);
+          periodDays.push(d.toDateString());
+        }
+        ovulationDays.push(ovulation.toDateString());
+
+        let d = new Date(fertileStart);
+        while (d <= fertileEnd) {
+          fertileDays.push(d.toDateString());
+          d.setDate(d.getDate() + 1);
+        }
+
+        // Move to next cycle
+        current = nextPeriod;
+      }
+
+      // Fill days
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
+        const cell = document.createElement("div");
+        cell.classList.add("day");
+        cell.innerText = day;
+
+        if (periodDays.includes(date.toDateString())) {
+          cell.classList.add("period");
+        }
+        if (ovulationDays.includes(date.toDateString())) {
+          cell.classList.add("ovulation");
+        }
+        if (fertileDays.includes(date.toDateString())) {
+          cell.classList.add("fertile");
+        }
+
+        calendarDiv.appendChild(cell);
+      }
+    }
+
+    function prevMonth() {
+      displayMonth--;
+      if (displayMonth < 0) {
+        displayMonth = 11;
+        displayYear--;
+      }
+      renderCalendar(displayYear, displayMonth);
+    }
+
+    function nextMonth() {
+      displayMonth++;
+      if (displayMonth > 11) {
+        displayMonth = 0;
+        displayYear++;
+      }
+      renderCalendar(displayYear, displayMonth);
+    }
+  </script>
+</head>
+<body>
+  <h1>Period Tracker</h1>
+  <nav>
+    <a href="index.html">Home</a>
+  </nav>
+
+  <form onsubmit="initTracker(event)">
+    <label>Start Date: <input type="date" id="start"></label><br><br>
+    <label>Cycle Length (days): <input type="number" id="cycle" value="28"></label><br><br>
+    <label>Period Length (days): <input type="number" id="periodLength" value="5"></label><br><br>
+    <button type="submit">Show Calendar</button>
+  </form>
+
+  <div class="calendar-header">
+    <button class="nav-btn" onclick="prevMonth()">⬅ Prev</button>
+    <h2 id="monthLabel"></h2>
+    <button class="nav-btn" onclick="nextMonth()">Next ➡</button>
+  </div>
+  <div class="calendar" id="calendar"></div>
+  <script src="script.js"></script>
+
+</body>
+</html>
