@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>🩺 PCOD Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Roboto', sans-serif; background: #fff0f6; color: #333; padding: 20px; max-width: 700px; margin: auto; }
+        h1 { color: #d6336c; text-align: center; margin-bottom: 20px; }
+        form { background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        label { display: block; margin: 10px 0; font-size: 18px; }
+        input[type="checkbox"] { margin-right: 10px; transform: scale(1.2); }
+        button { display: block; margin: 20px auto; padding: 12px 25px; background-color: #d6336c; color: #fff; font-size: 18px; border: none; border-radius: 10px; cursor: pointer; transition: 0.3s; }
+        button:hover { background-color: #b02657; }
+        #result, #log { text-align: center; font-size: 18px; margin-top: 20px; font-weight: bold; }
+        nav ul { list-style: none; display: flex; gap: 15px; justify-content: center; margin-bottom: 25px; padding: 0; }
+        nav a { text-decoration: none; color: #d6336c; font-weight: bold; font-size: 16px; }
+        nav a:hover { text-decoration: underline; }
+        #log { text-align: left; max-height: 200px; overflow-y: auto; background: #fff; padding: 10px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">🏠 Home</a></li>
+            <li><a href="ovulation.html">💖 Ovulation</a></li>
+            <li><a href="fertility.html">🌱 Fertility</a></li>
+            <li><a href="exercises.html">🏃 Exercises</a></li>
+            <li><a href="pain.html">😣 Pain</a></li>
+            <li><a href="reminders.html">⏰ Reminders</a></li>
+            <li><a href="pcod.html">🩺 PCOD Tracker</a></li>
+        </ul>
+    </nav>
+
+    <h1>🩺 PCOD Symptom Tracker</h1>
+
+    <form id="pcodForm">
+        <label><input type="checkbox" name="symptom" value="irregular_periods"> Irregular periods 🗓️</label>
+        <label><input type="checkbox" name="symptom" value="weight_gain"> Sudden weight gain ⚖️</label>
+        <label><input type="checkbox" name="symptom" value="acne"> Acne or oily skin 🌟</label>
+        <label><input type="checkbox" name="symptom" value="excess_hair"> Excess hair growth 🧔</label>
+        <label><input type="checkbox" name="symptom" value="hair_loss"> Hair thinning or loss 💇‍♀️</label>
+        <label><input type="checkbox" name="symptom" value="fatigue"> Fatigue 😴</label>
+        <label><input type="checkbox" name="symptom" value="mood_swings"> Mood swings 😓</label>
+        <button type="button" onclick="trackPCOD()">Log Symptoms & Check Risk</button>
+    </form>
+
+    <div id="result"></div>
+    <h2>📅 Symptom Log</h2>
+    <div id="log"></div>
+
+    <script>
+        function trackPCOD() {
+            const form = document.getElementById('pcodForm');
+            const symptoms = Array.from(form.querySelectorAll('input[name="symptom"]:checked')).map(s => s.nextSibling.textContent.trim());
+            const count = symptoms.length;
+            const result = document.getElementById('result');
+
+            // Determine risk
+            if(count >= 4){
+                result.innerText = "⚠️ High risk of PCOD. Please consult a doctor!";
+                result.style.color = "red";
+            } else if(count >= 2){
+                result.innerText = "⚠️ Moderate risk of PCOD. Monitor symptoms and consider consulting a doctor.";
+                result.style.color = "orange";
+            } else {
+                result.innerText = "✅ Low risk of PCOD. Maintain a healthy lifestyle!";
+                result.style.color = "green";
+            }
+
+            // Log today’s symptoms
+            const today = new Date().toLocaleDateString();
+            let logs = JSON.parse(localStorage.getItem('pcodLogs') || '[]');
+            logs.push({ date: today, symptoms: symptoms });
+            localStorage.setItem('pcodLogs', JSON.stringify(logs));
+            displayLogs();
+        }
+
+        function displayLogs() {
+            const logs = JSON.parse(localStorage.getItem('pcodLogs') || '[]');
+            const logDiv = document.getElementById('log');
+            logDiv.innerHTML = logs.map(l => `📅 ${l.date}: ${l.symptoms.join(', ') || 'No symptoms'}`).join('<br>');
+        }
+
+        // Show logs on page load
+        displayLogs();
+    </script>
+
+</body>
+</html>
